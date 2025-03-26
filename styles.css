@@ -1,0 +1,174 @@
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+ul,ol{
+    list-style-type: none;
+}
+
+body {
+    font-family: "Arial", sans-serif;
+    line-height: 1.6;
+    background-color: #e1f5fe;
+    color: #4a148c;
+}
+
+.container {
+    max-width: 800px;
+    margin: 2rem auto;
+    padding: 1rem;
+    background: #ffffff; /* Білий фон */
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+h1 {
+    text-align: center;
+    color: #f48fb1;
+    font-family: "Trebuchet MS", sans-serif;
+    margin-bottom: 2rem;
+    border-bottom: 2px solid #c2185b;
+    padding-bottom: 10px;
+}
+
+
+.input-section {
+    display: flex;
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+}
+
+.pair-input {
+    background-color: #e8f5e9;
+    border: 2px solid #a5d6a7;
+    color: #388e3c;
+    padding: 10px;
+    border-radius: 12px;
+    font-size: 16px;
+    transition: border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+.pair-input:focus {
+    border-color: #f48fb1;
+    box-shadow: 0 0 8px rgba(244, 143, 177, 0.5);
+    outline: none;
+}
+
+
+.controls {
+    display: flex;
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+}
+
+button {
+    padding: 0.8rem 1.5rem;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 1rem;
+    transition: background-color 0.3s;
+    font-family: "Arial", sans-serif;
+}
+
+.add-btn {
+    background-color: #f29f85;
+    color: white;
+}
+
+.sort-btn {
+    background-color: #81c784;
+    color: white;
+    flex: 1;
+}
+
+.delete-btn {
+    background-color: #f48fb1;
+    color: white;
+    flex: 1;
+}
+
+button:hover {
+    opacity: 0.9;
+}
+
+
+.pairs-list {
+    background: #ffffff;
+    border-radius: 8px;
+    padding: 1rem;
+    min-height: 200px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.pair-item {
+    position: relative;
+    display: flex;
+    align-items: center;
+}
+
+.pair-item label{
+    padding: 0.8rem;
+    flex: 1;
+    border-bottom: 1px solid #c8e6c9;
+    cursor: pointer;
+}
+.pair-item label:hover,
+.pair-item label:focus {
+    background-color: #fce4ec;
+}
+
+.visibility-hidden {
+    visibility: hidden;
+    width: 0;
+    position: absolute;
+}
+
+.pair-checkbox:checked ~ label {
+    background-color: #f48fb1;
+    color: white;
+}
+
+
+.input-error {
+    display: block;
+    color: #d32f2f;
+    font-size: 0.875rem;
+    margin-top: 4px;
+}
+
+.input-invalid {
+    border-color: #d32f2f;
+    background-color: #ffebee;
+}
+
+.input-invalid:focus {
+    border-color: #f48fb1;
+    outline-color: #f48fb1;
+}
+
+/* Адаптивний дизайн */
+@media (max-width: 600px) {
+    .container {
+        margin: 1rem;
+        padding: 0.5rem;
+    }
+
+    .input-section {
+        flex-direction: column;
+    }
+
+    .controls {
+        flex-direction: column;
+    }
+
+    button {
+        width: 100%;
+    }
+
+    h1 {
+        font-size: 1.5rem;
+    }
+}

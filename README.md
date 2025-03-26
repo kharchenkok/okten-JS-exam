@@ -1,1 +1,1 @@
-# okten-JS-exam
+# okten-JS

@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <meta name="description" content="Name/Value Pair Manager">
+    <title>Name/Value Pair Manager </title>
+    <!-- Open Graph -->
+<!--    <meta property="og:title" content="Name/Value Pair Manager">-->
+<!--    <meta property="og:description" content="On this blog I share tips and tricks, frameworks, projects, tutorials, etc">-->
+<!--    <meta property="og:image" content="https://kharchenkok.github.io/okten-JS-exam/image/opg/blog.jpg">-->
+<!--    <meta property="og:url" content="https://kharchenkok.github.io/okten-JS-exam/">-->
+<!--    <meta property="og:type" content="website">-->
+<!--    <meta property="og:site_name" content="Name/Value Pair Manager">-->
+    <!-- Twitter Card -->
+<!--    <meta name="twitter:card" content="summary_large_image">-->
+<!--    <meta name="twitter:title" content="Name/Value Pair Manager">-->
+<!--    <meta name="twitter:description" content="On this blog I share tips and tricks, frameworks, projects, tutorials, etc">-->
+<!--    <meta name="twitter:image" content="https://kharchenkok.github.io/okten-JS-exam/image/opg/blog.jpg">-->
+<!--    <meta name="twitter:site" content="@DasteenBlog">-->
+    <!-- ------------------------------ -->
+    <link rel="apple-touch-icon" sizes="180x180"
+            href="./favicon_io/apple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="32x32"
+            href="./favicon_io/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16"
+            href="./favicon_io/favicon-16x16.png">
+<!--    ==============================-->
+    
+    <link rel="stylesheet" href="styles.css">
+
+</head>
+<body>
+<main>
+    
+
+    <div class="container">
+        <h1>Name/Value Pair Manager</h1>
+        
+        <form class="input-section" id="pairForm" >
+            <label>
+            <input class="pair-input" type="text" id="pairInput" name="pairInput" placeholder="Enter name = value">
+            </label>
+            <button class="add-btn" type="submit">Add</button>
+        </form>
+        
+        <div class="controls">
+            <button class="sort-btn" id="sortByName" type="button">Sort by Name</button>
+            <button class="sort-btn" id="sortByValue" type="button">Sort by Value</button>
+            <button class="delete-btn" id="deleteSelected" type="button">Delete</button>
+        </div>
+        
+        <div class="list-container">
+            <ul id="pairsList" class="pairs-list"></ul>
+        </div>
+    </div>
+    <script src="js/main.js" type="module"></script>
+
+ 
+</main>
+</body>
+</html>

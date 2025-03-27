@@ -1,4 +1,24 @@
+:root{
+    --primary-bg: #e1f5fe;
+    --primary-text: #4a148c;
 
+    --white-text: #ffffff;
+    --white-bg:#ffffff;
+
+    --pink-color:#f48fb1;
+    --dark-pink-color:#c2185b;
+
+
+    /*container*/
+    --container-max-width:800px;
+    --container-padding: 40px;
+    /*section*/
+    --section-padding: 40px;
+    --gap:30px;
+
+    --radius:12px;
+    --transition: all 0.4 linear;
+}
 * {
     margin: 0;
     padding: 0;
@@ -11,93 +31,114 @@ ul,ol{
 body {
     font-family: "Arial", sans-serif;
     line-height: 1.6;
-    background-color: #e1f5fe;
-    color: #4a148c;
+    background-color: var(--primary-bg);
+    color: var(--primary-text);
+}
+section {
+    padding-top: var(--section-padding);
+    padding-bottom: var(--section-padding);
 }
 
+.visibility-hidden {
+    visibility: hidden;
+    width: 0;
+    position: absolute;
+}
 .container {
-    max-width: 800px;
-    margin: 2rem auto;
-    padding: 1rem;
-    background: #ffffff; /* Білий фон */
-    border-radius: 12px;
+    margin: 0 auto;
+    padding-left: var(--container-padding);
+    padding-right: var(--container-padding);
+    width: 100%;
+    max-width: var(--container-max-width);
+}
+
+.manager .container{
+    padding-top: var(--container-padding);
+    padding-bottom: var(--container-padding);
+    display: flex;
+    flex-direction: column;
+    gap: var(--gap);
+    background-color: var(--white-bg);
+    border-radius: var(--radius);
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
 }
 
-h1 {
+.title {
     text-align: center;
-    color: #f48fb1;
+    color: var(--pink-color);
     font-family: "Trebuchet MS", sans-serif;
-    margin-bottom: 2rem;
-    border-bottom: 2px solid #c2185b;
+    border-bottom: 2px solid var(--dark-pink-color);
     padding-bottom: 10px;
 }
 
 
-.input-section {
+.pair-form {
     display: flex;
-    gap: 1rem;
-    margin-bottom: 1.5rem;
+    gap: var(--gap);
 }
 
 .pair-input {
+    padding: 10px;
+    font-size: 16px;
+    color: #388e3c;
     background-color: #e8f5e9;
     border: 2px solid #a5d6a7;
-    color: #388e3c;
-    padding: 10px;
-    border-radius: 12px;
-    font-size: 16px;
-    transition: border-color 0.3s ease, box-shadow 0.3s ease;
+    border-radius: var(--radius);
+    transition: var(--transition);
 }
 
 .pair-input:focus {
-    border-color: #f48fb1;
-    box-shadow: 0 0 8px rgba(244, 143, 177, 0.5);
+
+    border-color: #81c784;
+    box-shadow: 0 0 8px rgba(129, 199, 132, 0.5);
     outline: none;
 }
 
 
 .controls {
     display: flex;
-    gap: 1rem;
-    margin-bottom: 1.5rem;
+    gap: var(--gap);
+
 }
 
 button {
-    padding: 0.8rem 1.5rem;
+    padding: 12px 24px;
     border: none;
-    border-radius: 8px;
+    border-radius: var(--radius);
     cursor: pointer;
     font-size: 1rem;
-    transition: background-color 0.3s;
+    transition: var(--transition);
     font-family: "Arial", sans-serif;
-}
 
+}
+button:hover,
+button:focus{
+    opacity: 0.9;
+    box-shadow: 0 0 8px rgba(138,136,136,0.8);
+}
 .add-btn {
-    background-color: #f29f85;
-    color: white;
+    background-color:#81c784 ;
+    color: var(--white-text);
 }
 
 .sort-btn {
-    background-color: #81c784;
-    color: white;
+    background-color: #9575cd ;
+    color: var(--white-text);
     flex: 1;
 }
 
 .delete-btn {
     background-color: #f48fb1;
-    color: white;
+    color: var(--white-text);
     flex: 1;
 }
 
-button:hover {
-    opacity: 0.9;
-}
+
 
 
 .pairs-list {
-    background: #ffffff;
-    border-radius: 8px;
+    background-color: var(--white-bg);
+    border-radius: var(--radius);
     padding: 1rem;
     min-height: 200px;
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
@@ -118,12 +159,6 @@ button:hover {
 .pair-item label:hover,
 .pair-item label:focus {
     background-color: #fce4ec;
-}
-
-.visibility-hidden {
-    visibility: hidden;
-    width: 0;
-    position: absolute;
 }
 
 .pair-checkbox:checked ~ label {
@@ -147,6 +182,19 @@ button:hover {
 .input-invalid:focus {
     border-color: #f48fb1;
     outline-color: #f48fb1;
+}
+
+.select-all-container {
+    margin-bottom: 10px;
+    padding: 5px;
+}
+
+.select-all-label {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    cursor: pointer;
+    color: #4a148c;
 }
 
 /* Адаптивний дизайн */

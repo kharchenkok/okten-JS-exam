@@ -1,5 +1,8 @@
-export default function validate(input) {
+export function validate(input) {
     const trimmed = input.trim();
+    if (trimmed === '') {
+        return { isValid: false, error: 'Input cannot be empty' };
+    }
     const pairs = trimmed.split('=').map(pair => pair.trim());
     let isValid;
 

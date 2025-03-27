@@ -1,4 +1,4 @@
-export default function handleErrorMessage(input, message = '') {
+export function handleErrorMessage(input, message = '') {
     const label = input.closest('label');
     let errorElement = label.querySelector('.input-error');
 

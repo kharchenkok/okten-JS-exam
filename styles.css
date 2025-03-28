@@ -17,7 +17,7 @@
     --gap:30px;
 
     --radius:12px;
-    --transition: all 0.4 linear;
+    --transition: all 0.4s ease-in-out;
 }
 * {
     margin: 0;
@@ -40,9 +40,10 @@ section {
 }
 
 .visibility-hidden {
+    opacity: 0;
     visibility: hidden;
-    width: 0;
-    position: absolute;
+    transition: var(--transition);
+    pointer-events: none;
 }
 .container {
     margin: 0 auto;
@@ -133,6 +134,42 @@ button:focus{
     flex: 1;
 }
 
+.modal-open-btn{
+    position: fixed;
+    bottom:2%;
+    right: 2%;
+    width: 80px;
+    height: 80px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border: none;
+    border-radius: 50%;
+    background-color: #f48fb1;
+    color: var(--white-text);
+}
+.modal-open-btn span{
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    opacity: 0;
+    transition: var(--transition);
+}
+.modal-open-btn:hover span,
+.modal-open-btn:focus span{
+    opacity: 1;
+    transition: var(--transition);
+
+}
+
+.modal-open-btn:hover .btn-icon,
+.modal-open-btn:focus .btn-icon{
+    opacity: 0;
+    transition: var(--transition);
+
+}
+
 
 
 
@@ -196,7 +233,41 @@ button:focus{
     cursor: pointer;
     color: #4a148c;
 }
+.modal {
+    display: flex;
+    position: fixed;
+    z-index: 1;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.4);
+    padding-top: 60px;
+}
 
+
+.modal-content {
+    background-color: #fefefe;
+    margin: 5% auto;
+    padding: 20px;
+    border: 1px solid #888;
+    width: 80%;
+}
+
+
+.close {
+    color: #aaa;
+    float: right;
+    font-size: 28px;
+    font-weight: bold;
+}
+
+.close:hover,
+.close:focus {
+    color: black;
+    text-decoration: none;
+    cursor: pointer;
+}
 /* Адаптивний дизайн */
 @media (max-width: 600px) {
     .container {

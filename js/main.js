@@ -1,10 +1,11 @@
 import {validate} from "./helpers/validate.js";
 import {handleErrorMessage} from "./helpers/message.js";
-import {renderPairItem,renderSelectAll} from "./helpers/renders.js";
+import {renderPairItem,renderSelectAll,renderModalDeletedItems} from "./helpers/renders.js";
 import {handleSelectAll,handleItemSelect} from "./helpers/select.js";
 import {handleSort} from "./helpers/sort.js";
 import {deleteSelected} from "./helpers/deleteSelected.js";
-
+import {loadFromLocalStorage,saveToLocalStorage} from "./helpers/localStorage.js";
+import { toggleModal } from "./helpers/modal.js";
 
 
 const pairForm = document.getElementById('pairForm');
@@ -12,12 +13,22 @@ const pairsWrapper = document.getElementById('pairsWrapper')
 const pairsList = document.getElementById('pairsList');
 const sortButtons = document.querySelectorAll('[data-sort]');
 const deleteSelectedBtn = document.getElementById('deleteSelected');
-// ==========================
-let userData = [];
+const showDeletedItemsBtn = document.getElementById('showDeletedItemsBtn');
+
+// =================
+const storedData = loadFromLocalStorage();
+let userData = storedData.userData;
+let deletedItems = storedData.deletedItems;
+
+console.log('storedData',storedData);
+
+updateUI();
+
 const sortDirections = {
     name: true,
     value: true,
 };
+
 
 
 function initSelectAll() {
@@ -36,6 +47,12 @@ function updateUI() {
     renderPairItem(userData, pairsList);
     renderSelectAll(userData, pairsWrapper);
     initSelectAll();
+    saveToLocalStorage({userData, deletedItems});
+    if (deletedItems.length > 0) {
+        showDeletedItemsBtn.classList.toggle('visibility-hidden', false);
+    } else {
+        showDeletedItemsBtn.classList.toggle('visibility-hidden', true);
+    }
 }
 
 function handleSubmit(e) {
@@ -56,6 +73,10 @@ function handleSubmit(e) {
     updateUI();
 }
 
+
+
+
+
 pairForm.addEventListener('submit', handleSubmit);
 
 sortButtons.forEach((button) => {
@@ -70,11 +91,15 @@ sortButtons.forEach((button) => {
 });
 
 
-
 deleteSelectedBtn.addEventListener('click', ()=>{
-    userData = deleteSelected(userData);
+    const { updatedUserData, updatedDeletedItems } = deleteSelected(userData,deletedItems);
+    userData = updatedUserData;
+    deletedItems = updatedDeletedItems;
+
+    console.log('deletedItems = updatedDeletedItems', updatedDeletedItems)
     updateUI()
 });
+
 
 
 pairsList.addEventListener('change', (e) => {
@@ -85,6 +110,69 @@ pairsList.addEventListener('change', (e) => {
         updateUI();
     }
 });
+
+
+// =======modal==========
+
+showDeletedItemsBtn.addEventListener('click', () => {
+    renderModalDeletedItems(deletedItems);
+    toggleModal('deletedItemsModal');
+
+    addRestoreEventListener();
+});
+
+
+function addRestoreEventListener() {
+    const restoreSelectedBtn = document.getElementById('restoreSelectedBtn');
+    if (restoreSelectedBtn) {
+        restoreSelectedBtn.addEventListener('click', () => {
+            const selectedItems = [];
+
+            const checkboxes = document.querySelectorAll('#deletedItemsModal input[type="checkbox"]:checked');
+            checkboxes.forEach(checkbox => {
+                const itemId = parseInt(checkbox.dataset.itemId);
+                const itemToRestore = deletedItems.find(item => item.id === itemId);
+
+                if (itemToRestore) {
+                    selectedItems.push(itemToRestore);
+                }
+            });
+
+            if (selectedItems.length > 0) {
+                userData = [...userData, ...selectedItems];
+                deletedItems = deletedItems.filter(item => !selectedItems.includes(item));
+
+                saveToLocalStorage({ userData, deletedItems });
+
+                updateUI();
+                renderModalDeletedItems(deletedItems); // Перемалюємо модалку з новими даними
+            }
+        });
+    }
+}
+
+
+
+
+document.body.addEventListener('click', (e) => {
+    if (e.target.id === 'closeModalBtn' || e.target.classList.contains('modal')) {
+        const modalId = e.target.closest('.modal') ? e.target.closest('.modal').id : null;
+        console.log('modalId', modalId);
+        if (modalId) {
+            toggleModal(modalId);
+        }
+    }
+});
+
+document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape') {
+        const modal = document.getElementById('deletedItemsModal');
+        if (modal && !modal.classList.contains('visibility-hidden')) {
+            toggleModal('deletedItemsModal');
+        }
+    }
+});
+
 
 
 

@@ -33,3 +33,22 @@ export function renderSelectAll(data, parentElem) {
     }
 }
 
+export function renderModalDeletedItems(deletedItems) {
+    const modalContent = document.querySelector('#deletedItemsModal .modal-content');
+    if (modalContent) {
+        modalContent.innerHTML = `
+            <h2>Deleted Items</h2>
+            ${deletedItems.length === 0 ?
+            '<p>No deleted items</p>' :
+            deletedItems.map(item => `
+                    <div>
+                        <input type="checkbox" id="restore-${item.id}" data-item-id="${item.id}">
+                        <label for="restore-${item.id}">${item.name} = ${item.value} (Deleted at: ${item.deletedTime})</label>
+                    </div>
+                `).join('')}
+            <button id="closeModalBtn">Close</button>
+            <button id="restoreSelectedBtn">Restore Selected</button>
+        `;
+    }
+}
+

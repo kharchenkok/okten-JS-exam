@@ -27,6 +27,7 @@ updateUI();
 const sortDirections = {
     name: true,
     value: true,
+    deletedTime:true,
 };
 
 
@@ -53,6 +54,8 @@ function updateUI() {
     } else {
         showDeletedItemsBtn.classList.toggle('visibility-hidden', true);
     }
+    addSortByDateEventListener();
+    addRestoreEventListener();
 }
 
 function handleSubmit(e) {
@@ -72,9 +75,6 @@ function handleSubmit(e) {
     e.target.reset();
     updateUI();
 }
-
-
-
 
 
 pairForm.addEventListener('submit', handleSubmit);
@@ -113,41 +113,66 @@ pairsList.addEventListener('change', (e) => {
 
 
 // =======modal==========
-
 showDeletedItemsBtn.addEventListener('click', () => {
     renderModalDeletedItems(deletedItems);
     toggleModal('deletedItemsModal');
 
+    addSortByDateEventListener();
     addRestoreEventListener();
 });
 
 
+function addSortByDateEventListener() {
+    const sortByDateBtn = document.getElementById('sortByDateBtn');
+    if (sortByDateBtn) {
+
+        sortByDateBtn.removeEventListener('click', sortByDateHandler);
+
+        sortByDateBtn.addEventListener('click', sortByDateHandler);
+    }
+}
+
+function sortByDateHandler() {
+    console.log('sortByDateBtn clicked');
+    const isAscending = sortDirections['deletedTime'];
+
+    deletedItems = handleSort(deletedItems, 'deletedTime', isAscending);
+
+    renderModalDeletedItems(deletedItems);
+
+    sortDirections['deletedTime'] = !isAscending;
+
+    updateUI();
+}
 function addRestoreEventListener() {
     const restoreSelectedBtn = document.getElementById('restoreSelectedBtn');
     if (restoreSelectedBtn) {
-        restoreSelectedBtn.addEventListener('click', () => {
-            const selectedItems = [];
+        restoreSelectedBtn.removeEventListener('click', restoreItemsHandler);
 
-            const checkboxes = document.querySelectorAll('#deletedItemsModal input[type="checkbox"]:checked');
-            checkboxes.forEach(checkbox => {
-                const itemId = parseInt(checkbox.dataset.itemId);
-                const itemToRestore = deletedItems.find(item => item.id === itemId);
+        restoreSelectedBtn.addEventListener('click', restoreItemsHandler);
+    }
+}
 
-                if (itemToRestore) {
-                    selectedItems.push(itemToRestore);
-                }
-            });
+function restoreItemsHandler() {
+    const selectedItems = [];
 
-            if (selectedItems.length > 0) {
-                userData = [...userData, ...selectedItems];
-                deletedItems = deletedItems.filter(item => !selectedItems.includes(item));
+    const checkboxes = document.querySelectorAll('#deletedItemsModal input[type="checkbox"]:checked');
+    checkboxes.forEach(checkbox => {
+        const itemId = parseInt(checkbox.dataset.itemId);
+        const itemToRestore = deletedItems.find(item => item.id === itemId);
 
-                saveToLocalStorage({ userData, deletedItems });
+        if (itemToRestore) {
+            selectedItems.push(itemToRestore);
+        }
+    });
 
-                updateUI();
-                renderModalDeletedItems(deletedItems); // Перемалюємо модалку з новими даними
-            }
-        });
+    if (selectedItems.length > 0) {
+        userData = [...userData, ...selectedItems];
+        deletedItems = deletedItems.filter(item => !selectedItems.includes(item));
+
+        saveToLocalStorage({ userData, deletedItems });
+        updateUI();
+        renderModalDeletedItems(deletedItems);
     }
 }
 

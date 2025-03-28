@@ -38,6 +38,7 @@ export function renderModalDeletedItems(deletedItems) {
     if (modalContent) {
         modalContent.innerHTML = `
             <h2>Deleted Items</h2>
+             <button  id="sortByDateBtn">Sort by Date</button>
             ${deletedItems.length === 0 ?
             '<p>No deleted items</p>' :
             deletedItems.map(item => `

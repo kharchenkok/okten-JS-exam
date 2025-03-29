@@ -1,39 +1,62 @@
 import {validate} from "./helpers/validate.js";
 import {handleErrorMessage} from "./helpers/message.js";
-import {renderPairItem,renderSelectAll,renderModalDeletedItems} from "./helpers/renders.js";
-import {handleSelectAll,handleItemSelect} from "./helpers/select.js";
+import {renderDeletedItems,renderPairItem} from "./helpers/renders.js";
+import {handleSelectAll, handleItemSelect, handleSelectAllCheckbox} from "./helpers/select.js";
 import {handleSort} from "./helpers/sort.js";
 import {deleteSelected} from "./helpers/deleteSelected.js";
 import {loadFromLocalStorage,saveToLocalStorage} from "./helpers/localStorage.js";
-import { toggleModal } from "./helpers/modal.js";
+import {restoreDeletedPairs} from "./helpers/restoreDeletedPairs.js";
+import {generateUniqueId} from "./helpers/generateUniqueId.js";
+import {filterItems} from "./helpers/filterItems.js";
 
 
-const pairForm = document.getElementById('pairForm');
-const pairsWrapper = document.getElementById('pairsWrapper')
+
+const pairsForm = document.getElementById('pairsForm');
 const pairsList = document.getElementById('pairsList');
 const sortButtons = document.querySelectorAll('[data-sort]');
+const selectAllCheckbox = document.getElementById('selectAll');
+
 const deleteSelectedBtn = document.getElementById('deleteSelected');
-const showDeletedItemsBtn = document.getElementById('showDeletedItemsBtn');
+const showModalBtn = document.getElementById('showModal');
+const modal = document.getElementById('modal');
+const deletedItemsList = document.getElementById('deletedItemsList');
+const closeModalBtn = document.getElementById('closeModal');
+const sortByDeletedTimeBtn = document.querySelector('[data-deleted-sort="deletedTime"]');
+const restoreDeletedBtn = document.getElementById('restoreDeletedItems');
+const searchPairsInput = document.getElementById('pairsSearch');
+const searchDeletedInput = document.getElementById('deletedSearch');
+
 
 // =================
 const storedData = loadFromLocalStorage();
 let userData = storedData.userData;
 let deletedItems = storedData.deletedItems;
 
-console.log('storedData',storedData);
-
-updateUI();
 
 const sortDirections = {
     name: true,
     value: true,
-    deletedTime:true,
+    deletedTime: false,
 };
 
+function updateUI() {
+    const filteredUserData = filterItems(userData, searchPairsInput.value);
+    const filteredDeletedItems = filterItems(deletedItems, searchDeletedInput.value, true);
 
+    renderPairItem(filteredUserData, pairsList);
+    renderDeletedItems(filteredDeletedItems, deletedItemsList);
+
+    handleSelectAllCheckbox(filteredUserData, selectAllCheckbox);
+    initSelectAll();
+    updateShowModalButton();
+    saveToLocalStorage({ userData, deletedItems });
+}
+
+function updateShowModalButton() {
+    showModalBtn.classList.toggle('visibility-hidden', deletedItems.length === 0);
+}
 
 function initSelectAll() {
-    const selectAllCheckbox = document.getElementById('selectAll');
     if (selectAllCheckbox && !selectAllCheckbox.hasAttribute("data-listener")) {
         selectAllCheckbox.addEventListener("change", (e) => {
             userData = handleSelectAll(userData, e.target.checked);
@@ -42,20 +65,8 @@ function initSelectAll() {
 
         selectAllCheckbox.setAttribute("data-listener", "true");
     }
-}
 
-function updateUI() {
-    renderPairItem(userData, pairsList);
-    renderSelectAll(userData, pairsWrapper);
-    initSelectAll();
-    saveToLocalStorage({userData, deletedItems});
-    if (deletedItems.length > 0) {
-        showDeletedItemsBtn.classList.toggle('visibility-hidden', false);
-    } else {
-        showDeletedItemsBtn.classList.toggle('visibility-hidden', true);
-    }
-    addSortByDateEventListener();
-    addRestoreEventListener();
+    handleSelectAllCheckbox(userData,selectAllCheckbox);
 }
 
 function handleSubmit(e) {
@@ -70,14 +81,51 @@ function handleSubmit(e) {
     }
 
     handleErrorMessage(inputElement);
-    const newId = userData.length ? Math.max(...userData.map(item => item.id)) + 1 : 1;
+    const newId  = generateUniqueId();
     userData.push({...result.pair, selected: false,id: newId});
     e.target.reset();
     updateUI();
 }
 
+function initModalHandlers() {
+    showModalBtn.addEventListener('click', () => {
+        renderDeletedItems(deletedItems, deletedItemsList);
+        modal.classList.toggle('visibility-hidden');
+    });
 
-pairForm.addEventListener('submit', handleSubmit);
+    closeModalBtn.addEventListener('click', () => {
+        modal.classList.toggle('visibility-hidden');
+    });
+
+    sortByDeletedTimeBtn.addEventListener('click', (e) => {
+
+        const field = e.target.getAttribute('data-deleted-sort');
+        const isAscending = sortDirections[field];
+        deletedItems = handleSort(deletedItems, field, isAscending);
+
+        renderDeletedItems(deletedItems, deletedItemsList);
+        sortDirections[field] = !sortDirections[field];
+        saveToLocalStorage({userData, deletedItems});
+    });
+
+    restoreDeletedBtn.addEventListener('click', () => {
+        const result = restoreDeletedPairs(deletedItems, userData);
+        userData = result.updatedUserData;
+        deletedItems = result.updatedDeletedItems;
+        updateUI();
+
+        const filteredDeletedItems = filterItems(deletedItems, searchDeletedInput.value, true);
+        if (filteredDeletedItems.length === 0) {
+            handleErrorMessage(searchDeletedInput, 'Нічого не знайдено після видалення. Спробуйте інші критерії.');
+        } else {
+            handleErrorMessage(searchDeletedInput);
+        }
+        renderDeletedItems(filteredDeletedItems, deletedItemsList);
+    });
+}
+
+pairsForm.addEventListener('submit', handleSubmit);
+
 
 sortButtons.forEach((button) => {
     button.addEventListener('click', () => {
@@ -95,111 +143,93 @@ deleteSelectedBtn.addEventListener('click', ()=>{
     const { updatedUserData, updatedDeletedItems } = deleteSelected(userData,deletedItems);
     userData = updatedUserData;
     deletedItems = updatedDeletedItems;
-
-    console.log('deletedItems = updatedDeletedItems', updatedDeletedItems)
+    const filteredUserData = filterItems(userData, searchPairsInput.value);
+    if (filteredUserData.length === 0) {
+        handleErrorMessage(searchPairsInput, 'Нічого не знайдено після видалення. Спробуйте інші критерії.');
+    } else {
+        handleErrorMessage(searchPairsInput);
+    }
     updateUI()
 });
 
+// Обробники подій для пошуку
+searchPairsInput.addEventListener('input', () => {
+    const filtered = filterItems(userData, searchPairsInput.value);
+    renderPairItem(filtered, pairsList);
+
+    if (searchPairsInput.value.trim() === '') {
+        handleErrorMessage(searchPairsInput, 'Будь ласка, введіть критерії пошуку.');
+    } else if (filtered.length === 0) {
+        handleErrorMessage(searchPairsInput, 'Нічого не знайдено. Спробуйте інші критерії.');
+    } else {
+        handleErrorMessage(searchPairsInput);
+    }
+});
+
+searchDeletedInput.addEventListener('input', () => {
+    const filtered = filterItems(deletedItems, searchDeletedInput.value, true);
+    renderDeletedItems(filtered, deletedItemsList);
+
+    if (searchDeletedInput.value.trim() === '') {
+        handleErrorMessage(searchDeletedInput, 'Будь ласка, введіть критерії пошуку.');
+    } else if (filtered.length === 0) {
+        handleErrorMessage(searchDeletedInput, 'Нічого не знайдено. Спробуйте інші критерії.');
+    } else {
+        handleErrorMessage(searchDeletedInput);
+    }
+});
+
+// Обробники подій для blur
+searchPairsInput.addEventListener('blur', () => {
+    if (searchPairsInput.value.trim() === '') {
+        handleErrorMessage(searchPairsInput);
+    }
+});
+
+searchDeletedInput.addEventListener('blur', () => {
+    if (searchDeletedInput.value.trim() === '') {
+        handleErrorMessage(searchDeletedInput);
+    }
+});
 
 
 pairsList.addEventListener('change', (e) => {
     if (e.target.hasAttribute('data-pair-checkbox')) {
-        const id = parseInt(e.target.id);
+        const id = e.target.id;
         const checked = e.target.checked;
+
         userData = handleItemSelect(userData, id, checked);
-        updateUI();
+
+        updateUI()
+
     }
 });
-
-
-// =======modal==========
-showDeletedItemsBtn.addEventListener('click', () => {
-    renderModalDeletedItems(deletedItems);
-    toggleModal('deletedItemsModal');
-
-    addSortByDateEventListener();
-    addRestoreEventListener();
-});
-
-
-function addSortByDateEventListener() {
-    const sortByDateBtn = document.getElementById('sortByDateBtn');
-    if (sortByDateBtn) {
-
-        sortByDateBtn.removeEventListener('click', sortByDateHandler);
-
-        sortByDateBtn.addEventListener('click', sortByDateHandler);
-    }
-}
-
-function sortByDateHandler() {
-    console.log('sortByDateBtn clicked');
-    const isAscending = sortDirections['deletedTime'];
-
-    deletedItems = handleSort(deletedItems, 'deletedTime', isAscending);
-
-    renderModalDeletedItems(deletedItems);
-
-    sortDirections['deletedTime'] = !isAscending;
-
+deleteSelectedBtn.addEventListener('click', () => {
+    const { updatedUserData, updatedDeletedItems } = deleteSelected(userData, deletedItems);
+    userData = updatedUserData;
+    deletedItems = updatedDeletedItems;
     updateUI();
-}
-function addRestoreEventListener() {
-    const restoreSelectedBtn = document.getElementById('restoreSelectedBtn');
-    if (restoreSelectedBtn) {
-        restoreSelectedBtn.removeEventListener('click', restoreItemsHandler);
 
-        restoreSelectedBtn.addEventListener('click', restoreItemsHandler);
-    }
-}
-
-function restoreItemsHandler() {
-    const selectedItems = [];
-
-    const checkboxes = document.querySelectorAll('#deletedItemsModal input[type="checkbox"]:checked');
-    checkboxes.forEach(checkbox => {
-        const itemId = parseInt(checkbox.dataset.itemId);
-        const itemToRestore = deletedItems.find(item => item.id === itemId);
-
-        if (itemToRestore) {
-            selectedItems.push(itemToRestore);
-        }
-    });
-
-    if (selectedItems.length > 0) {
-        userData = [...userData, ...selectedItems];
-        deletedItems = deletedItems.filter(item => !selectedItems.includes(item));
-
-        saveToLocalStorage({ userData, deletedItems });
-        updateUI();
-        renderModalDeletedItems(deletedItems);
-    }
-}
-
-
+    const filteredDeletedItems = filterItems(deletedItems, searchDeletedInput.value, true);
+    renderDeletedItems(filteredDeletedItems, deletedItemsList);
+});
 
 
 document.body.addEventListener('click', (e) => {
-    if (e.target.id === 'closeModalBtn' || e.target.classList.contains('modal')) {
-        const modalId = e.target.closest('.modal') ? e.target.closest('.modal').id : null;
-        console.log('modalId', modalId);
-        if (modalId) {
-            toggleModal(modalId);
-        }
+
+    if (e.target.id === "modal") {
+        modal.classList.toggle('visibility-hidden');
+
     }
 });
 
 document.addEventListener('keydown', (e) => {
     if (e.key === 'Escape') {
-        const modal = document.getElementById('deletedItemsModal');
-        if (modal && !modal.classList.contains('visibility-hidden')) {
-            toggleModal('deletedItemsModal');
-        }
+        modal.classList.toggle('visibility-hidden');
     }
 });
 
-
-
-
+initModalHandlers();
+updateUI();
 
 

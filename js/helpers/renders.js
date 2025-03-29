@@ -8,48 +8,22 @@ export function renderPairItem(data, parentElem) {
             <label for="${elem.id}">${elem.name} = ${elem.value}</label>
         </li>
         `
-        parentElem.insertAdjacentHTML('beforeend',itemMarkup);
+        parentElem.insertAdjacentHTML('afterbegin',itemMarkup);
     });
 }
 
-export function renderSelectAll(data, parentElem) {
-    const existingSelectAll = document.getElementById('selectAllContainer');
-    if (existingSelectAll) {
-        existingSelectAll.remove();
-    }
 
-    if (data.length >= 2) {
-        const selectAllMarkup = `
-            <div class="select-all-container" id="selectAllContainer">
-                <label class="select-all-label">
-                    <input type="checkbox" id="selectAll" ${data.every(item => item.selected) ? 'checked' : ''}> 
-                    Select All
-                </label>
-            </div>
-        `;
-        parentElem.insertAdjacentHTML('afterbegin', selectAllMarkup);
-
-
-    }
+export function renderDeletedItems(deletedItems, parentElem) {
+    parentElem.innerHTML = '';
+    deletedItems.forEach((item) => {
+        const formattedDateTime = new Date(item.deletedTime).toLocaleString("en-GB", { timeZone: "UTC" })
+        const itemMarkup=`
+        <li class="pair-item deleted-pair-item" >
+            <input class="pair-checkbox visibility-hidden" id="${item.id}" data-deleted-pair-checkbox type="checkbox" ${item.selected ? ' checked' : ''}>
+            <span class="custom-checkbox"></span>
+            <label for="${item.id}">${item.name} = ${item.value} (${formattedDateTime})</label>
+        </li>
+        `
+        parentElem.insertAdjacentHTML('beforeend',itemMarkup);
+    });
 }
-
-export function renderModalDeletedItems(deletedItems) {
-    const modalContent = document.querySelector('#deletedItemsModal .modal-content');
-    if (modalContent) {
-        modalContent.innerHTML = `
-            <h2>Deleted Items</h2>
-             <button  id="sortByDateBtn">Sort by Date</button>
-            ${deletedItems.length === 0 ?
-            '<p>No deleted items</p>' :
-            deletedItems.map(item => `
-                    <div>
-                        <input type="checkbox" id="restore-${item.id}" data-item-id="${item.id}">
-                        <label for="restore-${item.id}">${item.name} = ${item.value} (Deleted at: ${item.deletedTime})</label>
-                    </div>
-                `).join('')}
-            <button id="closeModalBtn">Close</button>
-            <button id="restoreSelectedBtn">Restore Selected</button>
-        `;
-    }
-}
-

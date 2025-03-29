@@ -39,12 +39,7 @@ section {
     padding-bottom: var(--section-padding);
 }
 
-.visibility-hidden {
-    opacity: 0;
-    visibility: hidden;
-    transition: var(--transition);
-    pointer-events: none;
-}
+
 .container {
     margin: 0 auto;
     padding-left: var(--container-padding);
@@ -145,7 +140,7 @@ button:focus{
     align-items: center;
     border: none;
     border-radius: 50%;
-    background-color: #f48fb1;
+    background-color: #ffa726;
     color: var(--white-text);
 }
 .modal-open-btn span{
@@ -168,6 +163,11 @@ button:focus{
     opacity: 0;
     transition: var(--transition);
 
+}
+
+.restore-btn{
+    background-color: #ffa726;
+    color: var(--white-text);
 }
 
 
@@ -197,10 +197,18 @@ button:focus{
 .pair-item label:focus {
     background-color: #fce4ec;
 }
+.pair-item.deleted-pair-item label:hover,
+.pair-item.deleted-pair-item label:focus {
+    background-color: #f6e4c8;
+}
 
 .pair-checkbox:checked ~ label {
     background-color: #f48fb1;
     color: white;
+}
+.deleted-pair-item .pair-checkbox:checked ~ label {
+    background-color: #ffa726;
+
 }
 
 
@@ -243,6 +251,7 @@ button:focus{
     height: 100%;
     background-color: rgba(0, 0, 0, 0.4);
     padding-top: 60px;
+    transition: var(--transition);
 }
 
 
@@ -267,6 +276,19 @@ button:focus{
     color: black;
     text-decoration: none;
     cursor: pointer;
+}
+
+
+.visibility-hidden {
+    opacity: 0;
+    visibility: hidden;
+    /*position: absolute;*/
+    top: 98%;
+    left: 98%;
+    width: 0;
+    height: 0;
+    transition: var(--transition);
+    pointer-events: none;
 }
 /* Адаптивний дизайн */
 @media (max-width: 600px) {

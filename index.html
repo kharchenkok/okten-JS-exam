@@ -38,9 +38,9 @@
       
             <h1 class="title">Name/Value Pair Manager</h1>
             
-            <form class="pair-form" id="pairForm" >
+            <form class="pair-form" id="pairsForm" >
                 <label>
-                <input class="pair-input" type="text" id="pairInput" name="pairInput" placeholder="Enter name = value">
+                    <input class="pair-input" type="text" id="pairInput" name="pairInput" placeholder="Enter name = value">
                 </label>
                 <button class="add-btn" type="submit">Add</button>
             </form>
@@ -51,10 +51,20 @@
                 <button class="delete-btn" id="deleteSelected" type="button">Delete</button>
             </div>
             
-            <div class="pairs-wrapper list-container" id="pairsWrapper">
-                <div class="select-all-container" id="selectAllContainer" style="display: none;">
+            <div class="pairs-wrapper list-container">
+                <div class="select-all-container" id="selectAllContainer" >
                     <label class="select-all-label">
                         <input type="checkbox" id="selectAll"> Select All
+                    </label>
+                </div>
+                <div class="search-container" >
+                    <label class="search-label">
+                        <input
+                                type="text"
+                                id="pairsSearch"
+                                placeholder="Search by Name/Value"
+                                class="search-input"
+                        >
                     </label>
                 </div>
                 <ul class="pairs-list" id="pairsList" ></ul>
@@ -62,15 +72,29 @@
         
     </div>
     </section>
-    <button class="modal-open-btn visibility-hidden" id="showDeletedItemsBtn">
+    <button class="modal-open-btn visibility-hidden" id="showModal">
         <span>Show deleted pairs</span>
         <svg class="btn-icon" xmlns="http://www.w3.org/2000/svg" width="30" height="30" viewBox="0 0 24 24">
             <path fill="currentColor" d="M3 6h18v2H3V6zm2 3h14v12H5V9zm4 2v8h2v-8H9zm4 0v8h2v-8h-2zm4-7h-4V2h-4v2H5v2h14V4z"/>
         </svg>
     </button>
-    <div id="deletedItemsModal" class="modal visibility-hidden">
+    <div class="modal visibility-hidden" id="modal" >
+        <button class="close-btn" id="closeModal" type="button">Close</button>
         <div class="modal-content">
-
+            <h2>Deleted items</h2>
+            <div class="controls">
+                <button class="sort-btn"  data-deleted-sort="deletedTime"  type="button">Sort by Delete Date</button>
+                <label class="search-label">
+                    <input
+                            type="text"
+                            id="deletedSearch"
+                            placeholder="Search by Name/Value/Date"
+                            class="search-input"
+                    >
+                </label>
+                <button class="restore-btn" id="restoreDeletedItems"  type="button">Restore Deleted Pairs</button>
+            </div>
+            <ul class="deleted-pairs-list" id="deletedItemsList"></ul>
         </div>
 
     </div>

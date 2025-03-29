@@ -7,3 +7,10 @@ export function handleItemSelect(data, id, checked) {
         item.id === id ? {...item, selected: checked} : item
     );
 }
+
+export function handleSelectAllCheckbox(data,checkbox) {
+
+    checkbox.checked = data.every(item => item.selected);
+
+
+}

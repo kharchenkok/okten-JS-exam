@@ -1,18 +1,14 @@
 // ====== ІМПОРТИ ======
-import { formValidate } from "./helpers/formValidate.js";
-import { createErrorMessage } from "./helpers/createErrorMessage.js";
-import { displayDeletedPairs, displayActivePairs } from "./helpers/displayList.js";
+import { formValidate,searchValidate } from "./utils/validations.js";
+import { displayErrorMessage,clearSearchError } from "./ui/displayErrorMessage.js";
+import { displayDeletedPairs, displayActivePairs } from "./ui/displayList.js";
 import { setAllPairsSelected, updatePairSelection, updateSelectAllCheckbox } from "./helpers/select.js";
-import { handleSort } from "./helpers/sort.js";
+import { sortByField } from "./helpers/sort.js";
 import { getSelectedPairsForDelete } from "./helpers/getSelectedPairsForDelete.js";
 import { loadFromLocalStorage, saveToLocalStorage } from "./helpers/localStorage.js";
 import { getSelectedPairsForRestore } from "./helpers/getSelectedPairsForRestore.js";
-import { generateUniqueId } from "./helpers/generateUniqueId.js";
+import { generateUniqueId } from "./utils/generateUniqueId.js";
 import { filterItems } from "./helpers/filterItems.js";
-import {
-    clearSearchError,
-    searchValidate
-} from "./helpers/searchValidate.js";
 import { toggleModal, updateModalBtnVisibility } from "./helpers/modal.js";
 
 // ====== ОГОЛОШЕННЯ ЗМІННИХ ======
@@ -26,7 +22,6 @@ const showModalBtn = document.getElementById('showModal');
 const modal = document.getElementById('modal');
 
 const closeModalBtn = document.getElementById('closeModal');
-const sortByDeletedTimeBtn = document.querySelector('[data-deleted-sort="deletedTime"]');
 const restoreDeletedBtn = document.getElementById('restoreDeletedPairs');
 const searchPairsInput = document.getElementById('pairsSearch');
 const searchDeletedInput = document.getElementById('deletedSearch');
@@ -59,47 +54,57 @@ function handleFormSubmit(e) {
 
     const result = formValidate(input.value);
     if (!result.isValid) {
-        createErrorMessage(input, result.error);
+        displayErrorMessage(input, result.error);
         return;
     }
 
-    createErrorMessage(input);
+    displayErrorMessage(input);
     userData.push({ ...result.pair, selected: false, id: generateUniqueId() });
     form.reset();
     refreshInterface();
 }
 
 //Опрацювання сортування
-function handleSortEvent(e) {
+function handleSort(e) {
     const field = e.target.getAttribute('data-sort');
     if (field === 'deletedTime') {
-        deletedItems = handleSort(field, deletedItems);
+        deletedItems = sortByField(field, deletedItems);
     } else {
-        userData = handleSort(field, userData);
+        userData = sortByField(field, userData);
     }
     refreshInterface();
 }
 
+
 //Опрацювання видалення/відновлення видалених елементів
 function handleUpdatePairLists(action) {
-    let updatedData =
-        action === 'delete' ? getSelectedPairsForDelete(userData, deletedItems)
-            : action === 'restore' ? getSelectedPairsForRestore(userData, deletedItems)
-                : null;
+    let updatedData, filtered, input;
+
+    if (action === 'delete') {
+        updatedData = getSelectedPairsForDelete(userData, deletedItems);
+        input = searchPairsInput;
+    } else if (action === 'restore') {
+        updatedData = getSelectedPairsForRestore(userData, deletedItems);
+        input = searchDeletedInput;
+    }
 
     if (!updatedData) return;
 
     userData = updatedData.updatedUserData;
     deletedItems = updatedData.updatedDeletedItems;
 
-    if (action === 'delete' && searchPairsInput.value.trim() !== '') {
-        searchValidate(searchPairsInput, userData);
-    } else if (action === 'restore' && searchDeletedInput.value.trim() !== '') {
-        searchValidate(searchDeletedInput, deletedItems, true);
+    if (input.value.trim() !== '') {
+        filtered = action === 'delete'
+            ? filterItems(userData, input.value)
+            : filterItems(deletedItems, input.value, true);
+
+        const result = searchValidate(filtered, input);
+        displayErrorMessage(input, result.isValid ? '' : result.error);
     }
 
     refreshInterface();
 }
+
 
 //Опрацювання чек-боксу SelectAll
 function handleSelectAllCheckbox(e)  {
@@ -126,13 +131,33 @@ function handlePairSelectionChange(e) {
     refreshInterface();
 }
 
+//Опрацювання пошуку
+function handleSearch(action) {
+    let filtered,input;
+    if (action === 'deleted'){
+        filtered = filterItems(deletedItems, searchDeletedInput.value,true);
+        input = searchDeletedInput;
+        displayDeletedPairs(filtered, deletedPairsList);
+
+    }
+    else if (action === 'active'){
+        filtered = filterItems(userData, searchPairsInput.value );
+        input = searchPairsInput;
+        displayActivePairs(filtered, pairsList);
+    }
+
+    const result = searchValidate(filtered, input);
+    !result.isValid ? displayErrorMessage(input, result.error): displayErrorMessage(input);
+
+}
+
 // ====== ОБРОБНИКИ ПОДІЙ ======
 
 //Обробник форми
 pairsForm.addEventListener('submit', handleFormSubmit);
 
 //Обробники сортування
-sortButtons.forEach(button => button.addEventListener('click', handleSortEvent));
+sortButtons.forEach(button => button.addEventListener('click', handleSort));
 
 //Обробники видалення/відновлення видалених пар
 deleteSelectedBtn.addEventListener('click', ()=>handleUpdatePairLists('delete'));
@@ -140,26 +165,12 @@ restoreDeletedBtn.addEventListener('click', ()=>handleUpdatePairLists('restore')
 
 //Обробники чек-боксів
 selectAllCheckbox.addEventListener('change', handleSelectAllCheckbox);
-
 pairsList.addEventListener('change', handlePairSelectionChange);
+deletedPairsList.addEventListener('change', handlePairSelectionChange);
 
-deletedPairsList.addEventListener('change', handlePairSelectionChange)
-
-// Обробники пошуку
-searchPairsInput.addEventListener('input', () => {
-
-    // const filtered = searchValidate(searchPairsInput, userData);
-    const filtered = filterItems(searchPairsInput, userData);
-    displayActivePairs(filtered, pairsList);
-});
-
-searchDeletedInput.addEventListener('input', () => {
-    const filtered = searchValidate(searchDeletedInput, deletedItems,true);
-    displayDeletedPairs(filtered, deletedPairsList);
-});
-
-
-
+//Обробники пошуку
+searchPairsInput.addEventListener('input', () => handleSearch('active'));
+searchDeletedInput.addEventListener('input', () => handleSearch('deleted'));
 searchPairsInput.addEventListener('blur', () => clearSearchError(searchPairsInput));
 searchDeletedInput.addEventListener('blur', () => clearSearchError(searchDeletedInput));
 pairsForm.elements.pairInput.addEventListener('blur', () => clearSearchError(pairsForm.elements.pairInput));

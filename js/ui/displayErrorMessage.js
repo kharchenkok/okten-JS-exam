@@ -1,4 +1,4 @@
-export function createErrorMessage(input, message = '') {
+export function displayErrorMessage(input, message = '') {
     const label = input.closest('label');
     let errorElement = label.querySelector('.input-invalid-message');
 
@@ -16,4 +16,11 @@ export function createErrorMessage(input, message = '') {
 
     errorElement.textContent = message;
     input.classList.add('input-invalid');
+}
+
+export function clearSearchError(input) {
+    if (input.value.trim() === '') {
+        input.value = '';
+        displayErrorMessage(input);
+    }
 }

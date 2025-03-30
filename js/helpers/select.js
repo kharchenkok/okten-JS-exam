@@ -1,5 +1,4 @@
 export function setAllPairsSelected(data, isChecked, filteredIds = null) {
-
     if (filteredIds) {
         return data.map(item => ({
             ...item,

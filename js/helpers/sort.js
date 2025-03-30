@@ -5,8 +5,7 @@ const sortDirections = {
 };
 
 
-export function handleSort(field, data) {
-    // const field = button.getAttribute('data-sort') || button.getAttribute('data-deleted-sort');
+export function sortByField(field, data) {
     const ascending = sortDirections[field];
     const sortedData = [...data].sort((a, b) => {
         if (field === 'deletedTime') {

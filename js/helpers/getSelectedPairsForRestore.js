@@ -1,8 +1,5 @@
-export function restoreDeletedPairs(deletedItems, userData) {
-    const selectedForRestore = deletedItems.filter(item =>
-        document.getElementById(`${item.id}`)?.checked
-    );
-
+export function getSelectedPairsForRestore(userData, deletedItems) {
+    const selectedForRestore = deletedItems.filter(item => item.selected);
     const restoredItems = selectedForRestore.map((item, index) => ({
         ...item,
         selected: true,

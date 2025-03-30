@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <meta name="description" content="Name/Value Pair Manager">
-    <title>Name/Value Pair Manager </title>
+    <title>Name/Value Pair Test </title>
     <!-- Open Graph -->
 <!--    <meta property="og:title" content="Name/Value Pair Manager">-->
 <!--    <meta property="og:description" content="On this blog I share tips and tricks, frameworks, projects, tutorials, etc">-->
@@ -34,43 +34,42 @@
 <body>
 <main>
     <section class="manager">
-    <div class="container">
-      
-            <h1 class="title">Name/Value Pair Manager</h1>
-            
-            <form class="pair-form" id="pairsForm" >
-                <label>
-                    <input class="pair-input" type="text" id="pairInput" name="pairInput" placeholder="Enter name = value">
-                </label>
-                <button class="add-btn" type="submit">Add</button>
-            </form>
-            
-            <div class="controls">
-                <button class="sort-btn" data-sort="name" type="button">Sort by Name</button>
-                <button class="sort-btn" data-sort="value" type="button">Sort by Value</button>
-                <button class="delete-btn" id="deleteSelected" type="button">Delete</button>
-            </div>
-            
-            <div class="pairs-wrapper list-container">
-                <div class="select-all-container" id="selectAllContainer" >
-                    <label class="select-all-label">
-                        <input type="checkbox" id="selectAll"> Select All
+        <div class="container">
+            <div class="wrapper">
+                
+                <h1 class="title">Name/Value Pair Test</h1>
+                
+                <form class="pair-form" id="pairsForm" >
+                    <label class="pair-label">
+                        <input class="pair-input" id="pairInput" type="text"  name="pairInput" placeholder="Enter name = value">
                     </label>
+                    <button class="add-btn" type="submit">Add</button>
+                </form>
+                
+                <div class="controls">
+                    <button class="sort-btn" data-sort="name" type="button">Sort by Name</button>
+                    <button class="sort-btn" data-sort="value" type="button">Sort by Value</button>
+                    <button class="delete-btn" id="deleteSelectedPairs" type="button">Delete</button>
                 </div>
-                <div class="search-container" >
-                    <label class="search-label">
-                        <input
-                                type="text"
-                                id="pairsSearch"
-                                placeholder="Search by Name/Value"
-                                class="search-input"
-                        >
-                    </label>
+                
+                <div class="pairs-wrapper">
+                    <div class="controls"  >
+                        <label class="pair-label select-all-label">
+                            <input class="pair-checkbox visibility-hidden" type="checkbox" id="selectAll">
+                            <span class="custom-checkbox"></span>
+                            Select All
+                        </label>
+                        <label class="pair-label">
+                            <input  class="pair-input" type="text" id="pairsSearch" placeholder="Search by Name/Value">
+                        </label>
+                    </div>
+                    
+                    <ul class="pairs-list" id="pairsList" ></ul>
                 </div>
-                <ul class="pairs-list" id="pairsList" ></ul>
+            
             </div>
-        
-    </div>
+        </div>
+
     </section>
     <button class="modal-open-btn visibility-hidden" id="showModal">
         <span>Show deleted pairs</span>
@@ -83,7 +82,8 @@
         <div class="modal-content">
             <h2>Deleted items</h2>
             <div class="controls">
-                <button class="sort-btn"  data-deleted-sort="deletedTime"  type="button">Sort by Delete Date</button>
+                <button class="sort-btn"  data-sort="deletedTime"  type="button">Sort by Delete Date</button>
+<!--                <button class="sort-btn"  data-deleted-sort="deletedTime"  type="button">Sort by Delete Date</button>-->
                 <label class="search-label">
                     <input
                             type="text"
@@ -92,9 +92,9 @@
                             class="search-input"
                     >
                 </label>
-                <button class="restore-btn" id="restoreDeletedItems"  type="button">Restore Deleted Pairs</button>
+                <button class="restore-btn" id="restoreDeletedPairs"  type="button">Restore Deleted Pairs</button>
             </div>
-            <ul class="deleted-pairs-list" id="deletedItemsList"></ul>
+            <ul class="deleted-pairs-list" id="deletedPairsList"></ul>
         </div>
 
     </div>

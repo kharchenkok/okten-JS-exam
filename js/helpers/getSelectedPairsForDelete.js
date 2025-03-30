@@ -1,4 +1,4 @@
-export function deleteSelected(userData,deletedItems) {
+export function getSelectedPairsForDelete(userData, deletedItems) {
     const selectedItems = userData.filter(item =>item.selected);
     const updatedUserData = userData.filter(item =>!item.selected);
     selectedItems.forEach(item =>{

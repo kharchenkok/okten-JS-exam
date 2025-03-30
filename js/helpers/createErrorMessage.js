@@ -1,6 +1,6 @@
-export function handleErrorMessage(input, message = '') {
+export function createErrorMessage(input, message = '') {
     const label = input.closest('label');
-    let errorElement = label.querySelector('.input-error');
+    let errorElement = label.querySelector('.input-invalid-message');
 
     if (!message) {
         errorElement?.remove();
@@ -10,7 +10,7 @@ export function handleErrorMessage(input, message = '') {
 
     if (!errorElement) {
         errorElement = document.createElement('span');
-        errorElement.className = 'input-error';
+        errorElement.className = 'input-invalid-message';
         label.appendChild(errorElement);
     }
 

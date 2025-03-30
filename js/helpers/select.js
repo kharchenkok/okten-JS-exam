@@ -5,7 +5,6 @@ export function setAllPairsSelected(data, isChecked, filteredIds = null) {
             selected: filteredIds[item.id] ? isChecked : item.selected
         }));
     }
-
     return data.map(item => ({...item, selected: isChecked}));
 }
 
@@ -16,5 +15,9 @@ export function updatePairSelection(data, id, checked) {
 }
 
 export function updateSelectAllCheckbox(data, checkbox) {
-    checkbox.checked = data.length > 0 && data.every(item => item.selected);
+    if (data.length === 0) {
+        checkbox.checked = false;
+        return;
+    }
+    checkbox.checked = data.every(item => item.selected);
 }

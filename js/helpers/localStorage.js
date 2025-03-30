@@ -1,10 +1,20 @@
 export function saveToLocalStorage(data) {
-    localStorage.setItem('userPairData', JSON.stringify(data));
+    try {
+        localStorage.setItem('userPairData', JSON.stringify(data));
+    } catch (error) {
+        console.error('Помилка збереження даних:', error);
+    }
 }
-
 
 export function loadFromLocalStorage() {
-    const storedData = localStorage.getItem('userPairData');
-    return storedData ? JSON.parse(storedData) : { userData: [], deletedItems: [] };
-}
+    try {
+        const storedData = localStorage.getItem('userPairData');
+        if (!storedData) {
+            return { userData: [], deletedItems: [] };
+        }
 
+        return JSON.parse(storedData);
+    } catch (error) {
+        return { userData: [], deletedItems: [] };
+    }
+}

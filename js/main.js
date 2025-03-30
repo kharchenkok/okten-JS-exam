@@ -165,8 +165,10 @@ restoreDeletedBtn.addEventListener('click', ()=>handleUpdatePairLists('restore')
 
 //Обробники чек-боксів
 selectAllCheckbox.addEventListener('change', handleSelectAllCheckbox);
+
 pairsList.addEventListener('change', handlePairSelectionChange);
 deletedPairsList.addEventListener('change', handlePairSelectionChange);
+
 
 //Обробники пошуку
 searchPairsInput.addEventListener('input', () => handleSearch('active'));

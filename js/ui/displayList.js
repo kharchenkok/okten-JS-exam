@@ -12,7 +12,7 @@ function createPairListItem(data, parentElem, options = {}) {
             <label class="pair-label">
                 <input class="pair-checkbox visibility-hidden" id="${item.id}" ${checkboxType} type="checkbox"${item.selected ? ' checked' : ''}>
                 <span class="custom-checkbox"></span>
-                ${item.name} = ${item.value}${dateInfo}
+                ${item.name} = ${item.value} ${dateInfo}
             </label>
         </li>
         `;

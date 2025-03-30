@@ -4,6 +4,7 @@ import {
 
 const { emptyInput, missingEquals, emptyName,emptyValue,invalidCharacters,emptySearch,noPairsFound} = errorMessageTexts;
 
+const alphanumericRegex = /^[a-zA-Z0-9]+$/;
 
 export function formValidate(input) {
     const trimmed = input.trim();
@@ -25,7 +26,7 @@ export function formValidate(input) {
     if (value.length === 0) {
         return { isValid:false, error: emptyValue };
     }
-    if (!name.match(/^[a-zA-Z0-9]+$/) || !value.match(/^[a-zA-Z0-9]+$/)) {
+    if (!name.match(alphanumericRegex) || !value.match(alphanumericRegex)) {
         return { isValid:false, error: invalidCharacters };
     }
 

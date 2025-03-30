@@ -2,7 +2,7 @@ export function saveToLocalStorage(data) {
     try {
         localStorage.setItem('userPairData', JSON.stringify(data));
     } catch (error) {
-        console.error('Помилка збереження даних:', error);
+        console.error('Error saving data:', error);
     }
 }
 

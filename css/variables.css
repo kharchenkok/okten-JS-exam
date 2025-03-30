@@ -1,0 +1,67 @@
+:root {
+    /* ===============================
+       Base Background Colors
+   =============================== */
+    --bg-primary: #1a1f2c;
+    --bg-secondary: rgba(42, 47, 60, 0.7);
+    /*--bg-secondary: #2a2f3c;*/
+    --bg-tertiary: #353b4a;
+    --bg-modal: rgba(0, 0, 0, 0.6);
+
+    /* ===============================
+       Accent Colors
+     =============================== */
+    --purple: #9d4edd;
+    --blue: #48bfe3;
+    --green: #2ec4b6;
+    --pink: #ff6b97;
+    --yellow: #f9c74f;
+    --orange: #ffa726;
+    --red: #d32f2f;
+    --red-muted:#ffebee1c;
+
+    /* ===============================
+       Gradients
+   =============================== */
+    --gradient-primary: linear-gradient(135deg, var(--purple), var(--blue));
+    --gradient-secondary: linear-gradient(135deg, var(--green), var(--blue));
+    --gradient-accent: linear-gradient(135deg, var(--pink), var(--purple));
+    --gradient-orange: linear-gradient(135deg, var(--orange), var(--pink));
+
+    /* ===============================
+       Text Colors
+   =============================== */
+    --text-primary: #ffffff;
+    --text-secondary: #b8c1cf;
+    --text-muted: #6c7a89;
+
+    /* ===============================
+       Fonts
+    =============================== */
+    --main-font:"Inter";
+
+
+    /* ===============================
+       Layout & Sizing
+    =============================== */
+    --container-max-width: 800px;
+    --container-padding: 1.5rem;
+    --section-padding: 1.5rem;
+    --gap: 1.5rem;
+    --radius: 12px;
+
+    --font-size: 16px;
+
+    /* ===============================
+       Effects & Animation
+   =============================== */
+    --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    --glow: 0 0 20px;
+    --animation-duration:15s;
+}
+
+
+
+
+
+

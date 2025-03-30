@@ -1,10 +1,10 @@
-export function filterItems(items, searchText, isDeletedList = false) {
+export function filterItems(data, searchText, isDeletedList = false) {
     const trimmed = searchText.trim();
-    if (!trimmed) return items;
+    if (!trimmed) return data;
 
     const lowerTrimmed = trimmed.toLowerCase();
 
-    return items.filter(item => {
+    return data.filter(item => {
         const nameMatch = item.name.toLowerCase().includes(lowerTrimmed);
         const valueMatch = item.value.toLowerCase().includes(lowerTrimmed);
         const timeMatch = isDeletedList && item.deletedTime
